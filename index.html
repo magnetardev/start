@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <title>Home</title>
+    <style>
+      .search-container {
+        position: absolute;
+        top: 0;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        -webkit-backdrop-filter: blur(20px);
+        background-color: rgba(52, 58, 64, 0.8);
+      }
+      input.searchbox {
+        padding-left: 16px;
+        padding-right: 16px;
+        border-radius: 9px;
+        -webkit-backdrop-filter: blur(20px);
+        background-color: rgba(41, 41, 41, 0.8) !important;
+      }
+      body {
+        background-color: rgba(52, 58, 64, 1.0);
+        background-size: auto;
+        overflow: hidden;
+      }
+      span.h0 {
+        font-size: 36px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+      a.shortcut {
+        -webkit-backdrop-filter: blur(10px);
+        background-color: rgba(52, 58, 64, 0.8);
+        margin-left: 8px;
+        margin-right: 8px;
+        color: #fff;
+        text-align: center;
+        line-height: 55px;
+        border-radius: 100px;
+        width: 50px;
+        height: 50px;
+      }
+      a.shortcut:hover {
+        text-decoration: none;
+      }
+
+      #settings {
+        -webkit-backdrop-filter: blur(10px);
+        background-color: rgba(52, 58, 64, 0.3);
+        margin-left: 8px;
+        margin-right: 8px;
+        color: #fff;
+        text-align: center;
+        line-height: 55px;
+        border-radius: 100px;
+        width: 50px;
+        height: 50px;
+        bottom:16px;
+        right:8px;
+        position: absolute;
+      }
+      #settings:hover {
+        text-decoration: none;
+      }
+    </style>
+    <script src="https://unpkg.com/ionicons@4.4.6/dist/ionicons.js"></script>
+  </head>
+  <body>
+    <div class="search-container d-flex align-items-center justify-content-center">
+      <div class="d-block text-light p-3" style="width:600px;">
+        <span class="h0">Search</span>
+        <input type="text" class="form-control searchbox text-light border-0 shadow-lg" id="search_bar" placeholder="Search or Enter a URL...">
+        <div class="d-flex flex-wrap justify-content-center mt-4" id="featured_sites"></div>
+      </div>
+    </div>
+    <script src="js/bootstrap.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      document.getElementById("search_bar").focus();
+      var shortcuts = [];
+      String.prototype.getShortcut = function(array) {
+        var s = this.toString();
+        return array.map(function(e) {
+          return ((e.terms.indexOf(s.toLowerCase()) > -1) ? e.link : null);
+        }).filter(function(e) {
+          return (e != null);
+        })[0];
+      }
+      var req = new XMLHttpRequest();
+      req.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 0) {
+          shortcuts = JSON.parse(this.response);
+          document.getElementById("search_bar").onkeypress = function(evt) {
+            console.log(evt);
+            var query = evt.target.value;
+            console.log(query);
+            var shortcut = query.getShortcut(shortcuts);
+            console.log(shortcut);
+            if (evt.keyCode == 13 && query.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g) != null) {
+              location.href = ((query.indexOf("http:") == -1 || query.indexOf("https:") == -1) ? "https://" + query.replace("http://", "").replace("https://", "") : query);
+            } else if (evt.keyCode == 13 && shortcut == null) {
+              location.href = `https://duckduckgo.com/?q=${encodeURI(query)}&ia=web`
+            } else if (evt.keyCode == 13 && shortcut != null) {
+              location.href = shortcut;
+            }
+          }
+          for (var i = 0; i < shortcuts.length; i++) {
+            if (shortcuts[i].visible == true) {
+              document.getElementById("featured_sites").innerHTML += `<a href="${shortcuts[i].link}" class="shortcut mb-3"><ion-icon name="${shortcuts[i].icon}"></ion-icon></a>`
+            }
+          }
+        }
+      };
+      req.onerror = function() {
+        console.error(this.status, this);
+      };
+      req.open("GET", "shortcuts.json", true);
+      req.send();
+      document.getElementsByTagName('body')[0].style = 'background-image:url(https://source.unsplash.com/random/1080x1880)';
+    </script>
+  </body>
+</html>
