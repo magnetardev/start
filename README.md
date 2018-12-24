@@ -1,5 +1,5 @@
 # Start
-A simple start screen for your browser. It uses [DuckDuckGo](https://duckduckgo.com) as its search engine by default.
+A simple start screen for your browser. It uses [DuckDuckGo](https://duckduckgo.com) as its search engine by default. It uses vanilla JS, and bootstrap to make it fast, but good looking.
 
 ## Adding Shortcuts
 Adding shortcuts is simple. You just go into shortcuts.json and add all your favorite shortcuts there.
