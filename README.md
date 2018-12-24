@@ -1,7 +1,7 @@
 # Start
 A simple start screen for your browser. It uses [DuckDuckGo](duckduckgo.com) as its search engine by default.
 
-##Adding Shortcuts
+## Adding Shortcuts
 Adding shortcuts is simple. You just go into shortcuts.json and add all your favorite shortcuts there.
 
 "icon" is based off of [ionicons](ionicons.com) and uses their icons only.
